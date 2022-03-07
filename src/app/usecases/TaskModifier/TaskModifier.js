@@ -1,6 +1,6 @@
 import Errors from "../../utils/errors.js";
 
-class TaskCreator {
+class TaskModifier {
     constructor(taskRepo) {
         if (
             !!taskRepo === false ||
@@ -43,12 +43,20 @@ class TaskCreator {
         title
         description
         status
-        userId
+        taskId
         */
-        if (this.private.validateOrder(data.order) === false) {
+        if (
+            data.order !== null &&
+            data.order !== undefined &&
+            this.private.validateOrder(data.order) === false
+        ) {
             this.errors.push("INVALID_ORDER");
         }
-        if (!!data.title === false || this.private.validateString(data.title) === false) {
+        if (
+            data.title !== null &&
+            data.title !== undefined &&
+            this.private.validateString(data.title) === false
+        ) {
             this.errors.push("INVALID_TITLE");
         }
         if (
@@ -58,27 +66,39 @@ class TaskCreator {
         ) {
             this.errors.push("INVALID_DESCRIPTION");
         }
-        if (!!data.status === false || this.private.validateStatus(data.status) === false) {
+        if (
+            data.status !== null &&
+            data.status !== undefined &&
+            this.private.validateStatus(data.status) === false
+        ) {
             this.errors.push("INVALID_STATUS");
         }
-        if (!!data.userId === false || this.private.validateString(data.userId) === false) {
-            this.errors.push("INVALID_USER_ID");
+        if (!!data.taskId === false || this.private.validateString(data.taskId) === false) {
+            this.errors.push("INVALID_TASK_ID");
         }
     }
 
-    async save(task) {
+    async modify(task) {
         this.validate(task);
         if (this.errors.length > 0) {
             let error = this.errors.join(", ");
             this.errors = [];
             throw Errors.createError(error);
         }
+        const { _id, order, title, description, status } = task;
         try {
-            await this.taskRepo.addTask(task);
+            await this.taskRepo.modify({
+                _id,
+                order,
+                title,
+                description,
+                status,
+            });
         } catch (error) {
-            throw Errors.createError("Saving task failed.");
+            console.log(error);
+            throw Errors.createError("Modifying task failed.");
         }
     }
 }
 
-export default TaskCreator;
+export default TaskModifier;

@@ -36,6 +36,20 @@ class TaskRepo {
     async find({ userId }) {
         return await this.taskDbInterface.find({ userId });
     }
+
+    async modify({ _id, order, title, description, status }) {
+        const task = await this.taskDbInterface.find({ _id });
+        if (task.length === 0) {
+            throw Errors.createError("Task not found for passed task id.");
+        }
+        await this.taskDbInterface.modify({
+            _id,
+            order,
+            title,
+            description,
+            status,
+        });
+    }
 }
 
 export default TaskRepo;
