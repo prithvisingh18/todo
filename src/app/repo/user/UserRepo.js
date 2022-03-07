@@ -4,8 +4,8 @@ class UserRepo {
     constructor(dbInterface) {
         if (
             !!dbInterface === false ||
-            !!dbInterface.isUserDbInterface === false ||
-            dbInterface.isUserDbInterface() === false
+            !!dbInterface.isUsersDbInterface === false ||
+            dbInterface.isUsersDbInterface() === false
         ) {
             throw Errors.createError("Invalid db interface passed for user repo.");
         }
@@ -20,8 +20,8 @@ class UserRepo {
         return await this.dbInterface.addUser(data);
     }
 
-    async find({ email }) {
-        return await this.dbInterface.find({ email });
+    async find({ email, _id }) {
+        return await this.dbInterface.find({ email, _id });
     }
 }
 

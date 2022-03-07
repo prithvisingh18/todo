@@ -1,7 +1,12 @@
+import mongoose from "mongoose";
 import Users from "../models/user.js";
 
+import { removeFistLevelNulls } from "../utils.js";
+
+const { ObjectId } = mongoose.Types;
+
 class UsersDbInterface {
-    static isUserDbInterface() {
+    static isUsersDbInterface() {
         return true;
     }
 
@@ -10,8 +15,11 @@ class UsersDbInterface {
         return user.save();
     }
 
-    static find({ email }) {
-        return Users.find({ email });
+    static async find({ email, _id }) {
+        let q = { email };
+        q._id = _id ? new ObjectId(_id) : null;
+        q = removeFistLevelNulls(q);
+        return Users.find(q);
     }
 }
 
